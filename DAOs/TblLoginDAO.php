@@ -29,4 +29,22 @@ class TblLoginDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`user`,`pass`,`ativo`,`tbl_cliente_id` from `tbl_login`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblLogin = new TblLogin();
+			$TblLogin->setId( $row->id );
+			$TblLogin->setUser( $row->user );
+			$TblLogin->setPass( $row->pass );
+			$TblLogin->setAtivo( $row->ativo );
+			$TblLogin->setTbl_cliente_id( $row->tbl_cliente_id );
+
+			$rst[] = $TblLogin;
+		}
+		return $rst;
+	}
 }

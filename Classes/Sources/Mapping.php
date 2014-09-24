@@ -201,10 +201,16 @@ class Mapping extends MyPDO{
             $campos = "";
             $marque = "";
             $blind  = "";
+            $objs   = "";
             
             foreach ( $fields as $i => $v ){
                 
-                if ( $v[5] == "auto_increment" ) {} else {
+                if ( $v[5] == "auto_increment" ) {
+                    
+                    $codigo = "`" . $v[0] . "`,";
+                    $objs  .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
+                    
+                } else {
 
                     if ( $campos == "" && $marque == "" ){
 
@@ -217,13 +223,15 @@ class Mapping extends MyPDO{
                     }
                     
                     $blind .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
+                    $objs  .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
                 }
             }
             
-            $query  = "insert into `".$nametable."` ( ".$campos." ) value ( ".$marque." )";
+            $insert  = "insert into `".$nametable."` ( ".$campos." ) value ( ".$marque." )";
+            $querys  = "select " . $codigo . $campos . " from `" . $nametable . "`";
             
             $content .= "\t\ttry {\n\n";
-            $content .= "\t\t\t\$sttm = parent::prepare( '" . $query . "' );\n";
+            $content .= "\t\t\t\$sttm = parent::prepare( '" . $insert . "' );\n";
             $content .= $blind;
             $content .= "\t\t\t\$sttm->execute();\n";
             $content .= "\t\t\tparent::commit();\n\n";
@@ -231,7 +239,17 @@ class Mapping extends MyPDO{
             $content .= "\t\t\tparent::rollBack();\n";
             $content .= "\t\t}\n";
             $content .= "\t}\n";
-            $content .= "}";
+            $content .= "\tpublic function getAll(){\n\n";
+            $content .= "\t\t\$sttm = parent::query( '" . $querys . "' );\n";
+            $content .= "\t\t\$rst  = Array();\n\n";
+            $content .= "\t\twhile( \$row = \$sttm->fetch( 5 ) ) {\n\n";
+            $content .= "\t\t\t\$" . $nameclass . " = new " . $nameclass ."();\n";            
+            $content .= $objs;
+            $content .= "\n\t\t\t\$rst[] = \$" . $nameclass . ";\n";
+            $content .= "\t\t}\n";
+            $content .= "\t\treturn \$rst;\n";
+            $content .= "\t}\n";
+            $content .= "}\n";
             
             return $content;
         }

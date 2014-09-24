@@ -29,4 +29,22 @@ class TblContatoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`tipo`,`contato`,`ativo`,`tbl_cliente_id` from `tbl_contato`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblContato = new TblContato();
+			$TblContato->setId( $row->id );
+			$TblContato->setTipo( $row->tipo );
+			$TblContato->setContato( $row->contato );
+			$TblContato->setAtivo( $row->ativo );
+			$TblContato->setTbl_cliente_id( $row->tbl_cliente_id );
+
+			$rst[] = $TblContato;
+		}
+		return $rst;
+	}
 }

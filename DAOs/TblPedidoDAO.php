@@ -31,4 +31,24 @@ class TblPedidoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`numero_pedido`,`data_pedido`,`status`,`forma_pagamento`,`ativo`,`tbl_cliente_id` from `tbl_pedido`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblPedido = new TblPedido();
+			$TblPedido->setId( $row->id );
+			$TblPedido->setNumero_pedido( $row->numero_pedido );
+			$TblPedido->setData_pedido( $row->data_pedido );
+			$TblPedido->setStatus( $row->status );
+			$TblPedido->setForma_pagamento( $row->forma_pagamento );
+			$TblPedido->setAtivo( $row->ativo );
+			$TblPedido->setTbl_cliente_id( $row->tbl_cliente_id );
+
+			$rst[] = $TblPedido;
+		}
+		return $rst;
+	}
 }

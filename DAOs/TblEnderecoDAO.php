@@ -32,4 +32,25 @@ class TblEnderecoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`rua`,`numero`,`latitude`,`longitude`,`ativo`,`tbl_bairro_id`,`tbl_cliente_id` from `tbl_endereco`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblEndereco = new TblEndereco();
+			$TblEndereco->setId( $row->id );
+			$TblEndereco->setRua( $row->rua );
+			$TblEndereco->setNumero( $row->numero );
+			$TblEndereco->setLatitude( $row->latitude );
+			$TblEndereco->setLongitude( $row->longitude );
+			$TblEndereco->setAtivo( $row->ativo );
+			$TblEndereco->setTbl_bairro_id( $row->tbl_bairro_id );
+			$TblEndereco->setTbl_cliente_id( $row->tbl_cliente_id );
+
+			$rst[] = $TblEndereco;
+		}
+		return $rst;
+	}
 }

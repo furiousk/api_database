@@ -27,4 +27,20 @@ class TblBairroDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`nome`,`ativo` from `tbl_bairro`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblBairro = new TblBairro();
+			$TblBairro->setId( $row->id );
+			$TblBairro->setNome( $row->nome );
+			$TblBairro->setAtivo( $row->ativo );
+
+			$rst[] = $TblBairro;
+		}
+		return $rst;
+	}
 }

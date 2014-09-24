@@ -30,4 +30,23 @@ class TblProdutoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`nome`,`image`,`preco`,`tipo`,`ativo` from `tbl_produto`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblProduto = new TblProduto();
+			$TblProduto->setId( $row->id );
+			$TblProduto->setNome( $row->nome );
+			$TblProduto->setImage( $row->image );
+			$TblProduto->setPreco( $row->preco );
+			$TblProduto->setTipo( $row->tipo );
+			$TblProduto->setAtivo( $row->ativo );
+
+			$rst[] = $TblProduto;
+		}
+		return $rst;
+	}
 }

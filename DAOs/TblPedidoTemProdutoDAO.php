@@ -30,4 +30,23 @@ class TblPedidoTemProdutoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`qntd`,`valor`,`tbl_pedido_id`,`tbl_pedido_tbl_cliente_id`,`tbl_produto_id` from `tbl_pedido_tem_produto`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblPedidoTemProduto = new TblPedidoTemProduto();
+			$TblPedidoTemProduto->setId( $row->id );
+			$TblPedidoTemProduto->setQntd( $row->qntd );
+			$TblPedidoTemProduto->setValor( $row->valor );
+			$TblPedidoTemProduto->setTbl_pedido_id( $row->tbl_pedido_id );
+			$TblPedidoTemProduto->setTbl_pedido_tbl_cliente_id( $row->tbl_pedido_tbl_cliente_id );
+			$TblPedidoTemProduto->setTbl_produto_id( $row->tbl_produto_id );
+
+			$rst[] = $TblPedidoTemProduto;
+		}
+		return $rst;
+	}
 }

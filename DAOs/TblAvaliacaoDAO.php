@@ -30,4 +30,23 @@ class TblAvaliacaoDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`rate`,`comentario`,`data_avaliacao`,`ativo`,`tbl_produto_id` from `tbl_avaliacao`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblAvaliacao = new TblAvaliacao();
+			$TblAvaliacao->setId( $row->id );
+			$TblAvaliacao->setRate( $row->rate );
+			$TblAvaliacao->setComentario( $row->comentario );
+			$TblAvaliacao->setData_avaliacao( $row->data_avaliacao );
+			$TblAvaliacao->setAtivo( $row->ativo );
+			$TblAvaliacao->setTbl_produto_id( $row->tbl_produto_id );
+
+			$rst[] = $TblAvaliacao;
+		}
+		return $rst;
+	}
 }

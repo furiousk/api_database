@@ -27,4 +27,20 @@ class TblIngredienteDAO extends MyPDO{
 			parent::rollBack();
 		}
 	}
+	public function getAll(){
+
+		$sttm = parent::query( 'select `id`,`receita_produto_id`,`ingrediente_produto_id` from `tbl_ingrediente`' );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblIngrediente = new TblIngrediente();
+			$TblIngrediente->setId( $row->id );
+			$TblIngrediente->setReceita_produto_id( $row->receita_produto_id );
+			$TblIngrediente->setIngrediente_produto_id( $row->ingrediente_produto_id );
+
+			$rst[] = $TblIngrediente;
+		}
+		return $rst;
+	}
 }
