@@ -17,6 +17,27 @@ class TblAvaliacaoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_avaliacao` ( `rate`,`comentario`,`data_avaliacao`,`ativo`,`tbl_produto_id` ) value ( :rate,:comentario,:data_avaliacao,:ativo,:tbl_produto_id )' );
+			$sttm->bindValue(':id', $TblAvaliacao->getId());
+			$sttm->bindValue(':rate', $TblAvaliacao->getRate());
+			$sttm->bindValue(':comentario', $TblAvaliacao->getComentario());
+			$sttm->bindValue(':data_avaliacao', $TblAvaliacao->getData_avaliacao());
+			$sttm->bindValue(':ativo', $TblAvaliacao->getAtivo());
+			$sttm->bindValue(':tbl_produto_id', $TblAvaliacao->getTbl_produto_id());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblAvaliacao $TblAvaliacao ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_avaliacao` set `rate`=:rate,`comentario`=:comentario,`data_avaliacao`=:data_avaliacao,`ativo`=:ativo,`tbl_produto_id`=:tbl_produto_id where `id`=:id' );
+			$sttm->bindValue(':id', $TblAvaliacao->getId());
 			$sttm->bindValue(':rate', $TblAvaliacao->getRate());
 			$sttm->bindValue(':comentario', $TblAvaliacao->getComentario());
 			$sttm->bindValue(':data_avaliacao', $TblAvaliacao->getData_avaliacao());
@@ -46,6 +67,18 @@ class TblAvaliacaoDAO extends MyPDO{
 			$TblAvaliacao->setTbl_produto_id( $row->tbl_produto_id );
 
 			$rst[] = $TblAvaliacao;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

@@ -17,6 +17,27 @@ class TblProdutoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_produto` ( `nome`,`image`,`preco`,`tipo`,`ativo` ) value ( :nome,:image,:preco,:tipo,:ativo )' );
+			$sttm->bindValue(':id', $TblProduto->getId());
+			$sttm->bindValue(':nome', $TblProduto->getNome());
+			$sttm->bindValue(':image', $TblProduto->getImage());
+			$sttm->bindValue(':preco', $TblProduto->getPreco());
+			$sttm->bindValue(':tipo', $TblProduto->getTipo());
+			$sttm->bindValue(':ativo', $TblProduto->getAtivo());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblProduto $TblProduto ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_produto` set `nome`=:nome,`image`=:image,`preco`=:preco,`tipo`=:tipo,`ativo`=:ativo where `id`=:id' );
+			$sttm->bindValue(':id', $TblProduto->getId());
 			$sttm->bindValue(':nome', $TblProduto->getNome());
 			$sttm->bindValue(':image', $TblProduto->getImage());
 			$sttm->bindValue(':preco', $TblProduto->getPreco());
@@ -46,6 +67,18 @@ class TblProdutoDAO extends MyPDO{
 			$TblProduto->setAtivo( $row->ativo );
 
 			$rst[] = $TblProduto;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

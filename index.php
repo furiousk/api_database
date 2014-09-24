@@ -12,7 +12,7 @@ $ini_dev = "../config/config.ini";//<-config do Bruno desenvolvedor
 /*
 $mapp = new Classes\Sources\Mapping( $ini_dev );
 $mapp->setFolderVos("VOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
-$mapp->setFolderDao("DAOs");<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
+$mapp->setFolderDao("DAOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
 $mapp->mappEntity();
 /*/
 /*Mapeamento automático*/
@@ -20,17 +20,23 @@ $mapp->mappEntity();
 //*
 $clidao  = new DAOs\TblClienteDAO( $ini_dev );
 $cliente = new VOs\TblCliente();
-
+/*/
+/*
 $c = $clidao->getAll();
 
 echo $c[1]->getNome();
 /*/
 
-/*
-$cliente->setNome("Carol Mendes");
-$cliente->setSexo("FEMININO");
-$cliente->setData_cadastro("2014-09-23");
-$cliente->setAniversario("2006-10-10");
-$cliente->setAtivo("1");
+//*
+
+$cliente->setId( 2 );
+$cliente->setNome( "Carol Mendes Alves" );
+$cliente->setSexo( "FEMININO" );
+$cliente->setData_cadastro( "2014-09-23" );
+$cliente->setAniversario( "2006-10-10" );
+$cliente->setAtivo( "1" );
+
 /*/
 //$clidao->insert( $cliente );
+ */
+$clidao->update( $cliente );

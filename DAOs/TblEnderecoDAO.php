@@ -17,6 +17,29 @@ class TblEnderecoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_endereco` ( `rua`,`numero`,`latitude`,`longitude`,`ativo`,`tbl_bairro_id`,`tbl_cliente_id` ) value ( :rua,:numero,:latitude,:longitude,:ativo,:tbl_bairro_id,:tbl_cliente_id )' );
+			$sttm->bindValue(':id', $TblEndereco->getId());
+			$sttm->bindValue(':rua', $TblEndereco->getRua());
+			$sttm->bindValue(':numero', $TblEndereco->getNumero());
+			$sttm->bindValue(':latitude', $TblEndereco->getLatitude());
+			$sttm->bindValue(':longitude', $TblEndereco->getLongitude());
+			$sttm->bindValue(':ativo', $TblEndereco->getAtivo());
+			$sttm->bindValue(':tbl_bairro_id', $TblEndereco->getTbl_bairro_id());
+			$sttm->bindValue(':tbl_cliente_id', $TblEndereco->getTbl_cliente_id());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblEndereco $TblEndereco ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_endereco` set `rua`=:rua,`numero`=:numero,`latitude`=:latitude,`longitude`=:longitude,`ativo`=:ativo,`tbl_bairro_id`=:tbl_bairro_id,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
+			$sttm->bindValue(':id', $TblEndereco->getId());
 			$sttm->bindValue(':rua', $TblEndereco->getRua());
 			$sttm->bindValue(':numero', $TblEndereco->getNumero());
 			$sttm->bindValue(':latitude', $TblEndereco->getLatitude());
@@ -50,6 +73,18 @@ class TblEnderecoDAO extends MyPDO{
 			$TblEndereco->setTbl_cliente_id( $row->tbl_cliente_id );
 
 			$rst[] = $TblEndereco;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

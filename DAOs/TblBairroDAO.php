@@ -17,6 +17,24 @@ class TblBairroDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_bairro` ( `nome`,`ativo` ) value ( :nome,:ativo )' );
+			$sttm->bindValue(':id', $TblBairro->getId());
+			$sttm->bindValue(':nome', $TblBairro->getNome());
+			$sttm->bindValue(':ativo', $TblBairro->getAtivo());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblBairro $TblBairro ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_bairro` set `nome`=:nome,`ativo`=:ativo where `id`=:id' );
+			$sttm->bindValue(':id', $TblBairro->getId());
 			$sttm->bindValue(':nome', $TblBairro->getNome());
 			$sttm->bindValue(':ativo', $TblBairro->getAtivo());
 			$sttm->execute();
@@ -40,6 +58,18 @@ class TblBairroDAO extends MyPDO{
 			$TblBairro->setAtivo( $row->ativo );
 
 			$rst[] = $TblBairro;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

@@ -17,6 +17,28 @@ class TblPedidoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_pedido` ( `numero_pedido`,`data_pedido`,`status`,`forma_pagamento`,`ativo`,`tbl_cliente_id` ) value ( :numero_pedido,:data_pedido,:status,:forma_pagamento,:ativo,:tbl_cliente_id )' );
+			$sttm->bindValue(':id', $TblPedido->getId());
+			$sttm->bindValue(':numero_pedido', $TblPedido->getNumero_pedido());
+			$sttm->bindValue(':data_pedido', $TblPedido->getData_pedido());
+			$sttm->bindValue(':status', $TblPedido->getStatus());
+			$sttm->bindValue(':forma_pagamento', $TblPedido->getForma_pagamento());
+			$sttm->bindValue(':ativo', $TblPedido->getAtivo());
+			$sttm->bindValue(':tbl_cliente_id', $TblPedido->getTbl_cliente_id());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblPedido $TblPedido ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_pedido` set `numero_pedido`=:numero_pedido,`data_pedido`=:data_pedido,`status`=:status,`forma_pagamento`=:forma_pagamento,`ativo`=:ativo,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
+			$sttm->bindValue(':id', $TblPedido->getId());
 			$sttm->bindValue(':numero_pedido', $TblPedido->getNumero_pedido());
 			$sttm->bindValue(':data_pedido', $TblPedido->getData_pedido());
 			$sttm->bindValue(':status', $TblPedido->getStatus());
@@ -48,6 +70,18 @@ class TblPedidoDAO extends MyPDO{
 			$TblPedido->setTbl_cliente_id( $row->tbl_cliente_id );
 
 			$rst[] = $TblPedido;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

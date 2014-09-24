@@ -17,6 +17,24 @@ class TblIngredienteDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_ingrediente` ( `receita_produto_id`,`ingrediente_produto_id` ) value ( :receita_produto_id,:ingrediente_produto_id )' );
+			$sttm->bindValue(':id', $TblIngrediente->getId());
+			$sttm->bindValue(':receita_produto_id', $TblIngrediente->getReceita_produto_id());
+			$sttm->bindValue(':ingrediente_produto_id', $TblIngrediente->getIngrediente_produto_id());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblIngrediente $TblIngrediente ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_ingrediente` set `receita_produto_id`=:receita_produto_id,`ingrediente_produto_id`=:ingrediente_produto_id where `id`=:id' );
+			$sttm->bindValue(':id', $TblIngrediente->getId());
 			$sttm->bindValue(':receita_produto_id', $TblIngrediente->getReceita_produto_id());
 			$sttm->bindValue(':ingrediente_produto_id', $TblIngrediente->getIngrediente_produto_id());
 			$sttm->execute();
@@ -40,6 +58,18 @@ class TblIngredienteDAO extends MyPDO{
 			$TblIngrediente->setIngrediente_produto_id( $row->ingrediente_produto_id );
 
 			$rst[] = $TblIngrediente;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

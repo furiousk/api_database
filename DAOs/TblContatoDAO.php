@@ -17,6 +17,26 @@ class TblContatoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_contato` ( `tipo`,`contato`,`ativo`,`tbl_cliente_id` ) value ( :tipo,:contato,:ativo,:tbl_cliente_id )' );
+			$sttm->bindValue(':id', $TblContato->getId());
+			$sttm->bindValue(':tipo', $TblContato->getTipo());
+			$sttm->bindValue(':contato', $TblContato->getContato());
+			$sttm->bindValue(':ativo', $TblContato->getAtivo());
+			$sttm->bindValue(':tbl_cliente_id', $TblContato->getTbl_cliente_id());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblContato $TblContato ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_contato` set `tipo`=:tipo,`contato`=:contato,`ativo`=:ativo,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
+			$sttm->bindValue(':id', $TblContato->getId());
 			$sttm->bindValue(':tipo', $TblContato->getTipo());
 			$sttm->bindValue(':contato', $TblContato->getContato());
 			$sttm->bindValue(':ativo', $TblContato->getAtivo());
@@ -44,6 +64,18 @@ class TblContatoDAO extends MyPDO{
 			$TblContato->setTbl_cliente_id( $row->tbl_cliente_id );
 
 			$rst[] = $TblContato;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}

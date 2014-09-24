@@ -198,37 +198,45 @@ class Mapping extends MyPDO{
             $content .= "\tpublic function insert( " . $nameclass . " \$" . $nameclass . " ){\n\n";
             $content .= "\t\tparent::beginTransaction();\n";
 
-            $campos = "";
-            $marque = "";
-            $blind  = "";
-            $objs   = "";
+            $campos  = "";
+            $camposu = "";
+            $marque  = "";
+            $blind   = "";
+            $blindup = "";
+            $objs    = "";
             
             foreach ( $fields as $i => $v ){
                 
                 if ( $v[5] == "auto_increment" ) {
                     
-                    $codigo = "`" . $v[0] . "`,";
-                    $objs  .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
+                    $codigo   = "`" . $v[0] . "`,";
+                    $codigosu = "`".$v[0]."`=:".$v[0];
+                    $objs    .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
+                    $blindup .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
                     
                 } else {
 
                     if ( $campos == "" && $marque == "" ){
 
-                            $campos = "`" . $v[0] . "`";
-                            $marque = ":" . $v[0];
+                            $campos  = "`" . $v[0] . "`";
+                            $marque  = ":" . $v[0];
+                            $camposu = "`".$v[0]."`=:".$v[0];
                     } else {
 
-                            $campos .= ",`" . $v[0] . "`";
-                            $marque .= ",:" . $v[0];
+                            $campos  .= ",`" . $v[0] . "`";
+                            $marque  .= ",:" . $v[0];
+                            $camposu .= ",`".$v[0]."`=:".$v[0];
                     }
                     
-                    $blind .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
-                    $objs  .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
+                    $blind   .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
+                    $blindup .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
+                    $objs    .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
                 }
             }
             
-            $insert  = "insert into `".$nametable."` ( ".$campos." ) value ( ".$marque." )";
-            $querys  = "select " . $codigo . $campos . " from `" . $nametable . "`";
+            $insert = "insert into `".$nametable."` ( ".$campos." ) value ( ".$marque." )";
+            $update ="update `".$nametable."` set ".$camposu." where ".$codigosu."";
+            $querys = "select " . $codigo . $campos . " from `" . $nametable . "`";
             
             $content .= "\t\ttry {\n\n";
             $content .= "\t\t\t\$sttm = parent::prepare( '" . $insert . "' );\n";
@@ -239,6 +247,19 @@ class Mapping extends MyPDO{
             $content .= "\t\t\tparent::rollBack();\n";
             $content .= "\t\t}\n";
             $content .= "\t}\n";
+            
+            $content .= "\tpublic function update( " . $nameclass . " \$" . $nameclass . " ){\n\n";
+            $content .= "\t\tparent::beginTransaction();\n";
+            $content .= "\t\ttry {\n\n";
+            $content .= "\t\t\t\$sttm = parent::prepare( '" . $update . "' );\n";
+            $content .= $blind;
+            $content .= "\t\t\t\$sttm->execute();\n";
+            $content .= "\t\t\tparent::commit();\n\n";
+            $content .= "\t\t} catch(Exception \$e) {\n\n";
+            $content .= "\t\t\tparent::rollBack();\n";
+            $content .= "\t\t}\n";
+            $content .= "\t}\n";            
+            
             $content .= "\tpublic function getAll(){\n\n";
             $content .= "\t\t\$sttm = parent::query( '" . $querys . "' );\n";
             $content .= "\t\t\$rst  = Array();\n\n";
@@ -249,6 +270,14 @@ class Mapping extends MyPDO{
             $content .= "\t\t}\n";
             $content .= "\t\treturn \$rst;\n";
             $content .= "\t}\n";
+            $content .= "\tpublic function custonQuery( \$string ){\n\n";
+            $content .= "\t\t\$sttm = parent::query( \$string );\n";
+            $content .= "\t\t\$rst  = Array();\n\n";
+            $content .= "\t\twhile( \$row = \$sttm->fetch( 3 ) ) {\n\n";
+            $content .= "\n\t\t\t\$rst[] = \$row;\n";
+            $content .= "\t\t}\n";
+            $content .= "\t\treturn \$rst;\n";
+            $content .= "\t}\n";            
             $content .= "}\n";
             
             return $content;

@@ -17,6 +17,27 @@ class TblClienteDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_cliente` ( `nome`,`aniversario`,`sexo`,`data_cadastro`,`ativo` ) value ( :nome,:aniversario,:sexo,:data_cadastro,:ativo )' );
+			$sttm->bindValue(':id', $TblCliente->getId());
+			$sttm->bindValue(':nome', $TblCliente->getNome());
+			$sttm->bindValue(':aniversario', $TblCliente->getAniversario());
+			$sttm->bindValue(':sexo', $TblCliente->getSexo());
+			$sttm->bindValue(':data_cadastro', $TblCliente->getData_cadastro());
+			$sttm->bindValue(':ativo', $TblCliente->getAtivo());
+			$sttm->execute();
+			parent::commit();
+
+		} catch(Exception $e) {
+
+			parent::rollBack();
+		}
+	}
+	public function update( TblCliente $TblCliente ){
+
+		parent::beginTransaction();
+		try {
+
+			$sttm = parent::prepare( 'update `tbl_cliente` set `nome`=:nome,`aniversario`=:aniversario,`sexo`=:sexo,`data_cadastro`=:data_cadastro,`ativo`=:ativo where `id`=:id' );
+			$sttm->bindValue(':id', $TblCliente->getId());
 			$sttm->bindValue(':nome', $TblCliente->getNome());
 			$sttm->bindValue(':aniversario', $TblCliente->getAniversario());
 			$sttm->bindValue(':sexo', $TblCliente->getSexo());
@@ -46,6 +67,18 @@ class TblClienteDAO extends MyPDO{
 			$TblCliente->setAtivo( $row->ativo );
 
 			$rst[] = $TblCliente;
+		}
+		return $rst;
+	}
+	public function custonQuery( $string ){
+
+		$sttm = parent::query( $string );
+		$rst  = Array();
+
+		while( $row = $sttm->fetch( 3 ) ) {
+
+
+			$rst[] = $row;
 		}
 		return $rst;
 	}
