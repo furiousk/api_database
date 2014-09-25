@@ -17,7 +17,6 @@ class TblContatoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_contato` ( `tipo`,`contato`,`ativo`,`tbl_cliente_id` ) value ( :tipo,:contato,:ativo,:tbl_cliente_id )' );
-			$sttm->bindValue(':id', $TblContato->getId());
 			$sttm->bindValue(':tipo', $TblContato->getTipo());
 			$sttm->bindValue(':contato', $TblContato->getContato());
 			$sttm->bindValue(':ativo', $TblContato->getAtivo());

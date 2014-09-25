@@ -17,7 +17,6 @@ class TblEnderecoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_endereco` ( `rua`,`numero`,`latitude`,`longitude`,`ativo`,`tbl_bairro_id`,`tbl_cliente_id` ) value ( :rua,:numero,:latitude,:longitude,:ativo,:tbl_bairro_id,:tbl_cliente_id )' );
-			$sttm->bindValue(':id', $TblEndereco->getId());
 			$sttm->bindValue(':rua', $TblEndereco->getRua());
 			$sttm->bindValue(':numero', $TblEndereco->getNumero());
 			$sttm->bindValue(':latitude', $TblEndereco->getLatitude());

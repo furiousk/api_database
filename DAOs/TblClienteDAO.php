@@ -17,7 +17,6 @@ class TblClienteDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_cliente` ( `nome`,`aniversario`,`sexo`,`data_cadastro`,`ativo` ) value ( :nome,:aniversario,:sexo,:data_cadastro,:ativo )' );
-			$sttm->bindValue(':id', $TblCliente->getId());
 			$sttm->bindValue(':nome', $TblCliente->getNome());
 			$sttm->bindValue(':aniversario', $TblCliente->getAniversario());
 			$sttm->bindValue(':sexo', $TblCliente->getSexo());

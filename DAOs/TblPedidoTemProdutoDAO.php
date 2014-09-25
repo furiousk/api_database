@@ -17,7 +17,6 @@ class TblPedidoTemProdutoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_pedido_tem_produto` ( `qntd`,`valor`,`tbl_pedido_id`,`tbl_pedido_tbl_cliente_id`,`tbl_produto_id` ) value ( :qntd,:valor,:tbl_pedido_id,:tbl_pedido_tbl_cliente_id,:tbl_produto_id )' );
-			$sttm->bindValue(':id', $TblPedidoTemProduto->getId());
 			$sttm->bindValue(':qntd', $TblPedidoTemProduto->getQntd());
 			$sttm->bindValue(':valor', $TblPedidoTemProduto->getValor());
 			$sttm->bindValue(':tbl_pedido_id', $TblPedidoTemProduto->getTbl_pedido_id());

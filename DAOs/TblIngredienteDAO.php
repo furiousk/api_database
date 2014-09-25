@@ -17,7 +17,6 @@ class TblIngredienteDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_ingrediente` ( `receita_produto_id`,`ingrediente_produto_id` ) value ( :receita_produto_id,:ingrediente_produto_id )' );
-			$sttm->bindValue(':id', $TblIngrediente->getId());
 			$sttm->bindValue(':receita_produto_id', $TblIngrediente->getReceita_produto_id());
 			$sttm->bindValue(':ingrediente_produto_id', $TblIngrediente->getIngrediente_produto_id());
 			$sttm->execute();

@@ -252,7 +252,7 @@ class Mapping extends MyPDO{
             $content .= "\t\tparent::beginTransaction();\n";
             $content .= "\t\ttry {\n\n";
             $content .= "\t\t\t\$sttm = parent::prepare( '" . $update . "' );\n";
-            $content .= $blind;
+            $content .= $blindup;
             $content .= "\t\t\t\$sttm->execute();\n";
             $content .= "\t\t\tparent::commit();\n\n";
             $content .= "\t\t} catch(Exception \$e) {\n\n";

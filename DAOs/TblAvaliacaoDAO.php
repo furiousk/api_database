@@ -17,7 +17,6 @@ class TblAvaliacaoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_avaliacao` ( `rate`,`comentario`,`data_avaliacao`,`ativo`,`tbl_produto_id` ) value ( :rate,:comentario,:data_avaliacao,:ativo,:tbl_produto_id )' );
-			$sttm->bindValue(':id', $TblAvaliacao->getId());
 			$sttm->bindValue(':rate', $TblAvaliacao->getRate());
 			$sttm->bindValue(':comentario', $TblAvaliacao->getComentario());
 			$sttm->bindValue(':data_avaliacao', $TblAvaliacao->getData_avaliacao());

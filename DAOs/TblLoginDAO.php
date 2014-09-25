@@ -17,7 +17,6 @@ class TblLoginDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_login` ( `user`,`pass`,`ativo`,`tbl_cliente_id` ) value ( :user,:pass,:ativo,:tbl_cliente_id )' );
-			$sttm->bindValue(':id', $TblLogin->getId());
 			$sttm->bindValue(':user', $TblLogin->getUser());
 			$sttm->bindValue(':pass', $TblLogin->getPass());
 			$sttm->bindValue(':ativo', $TblLogin->getAtivo());

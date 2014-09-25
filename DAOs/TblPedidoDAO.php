@@ -17,7 +17,6 @@ class TblPedidoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_pedido` ( `numero_pedido`,`data_pedido`,`status`,`forma_pagamento`,`ativo`,`tbl_cliente_id` ) value ( :numero_pedido,:data_pedido,:status,:forma_pagamento,:ativo,:tbl_cliente_id )' );
-			$sttm->bindValue(':id', $TblPedido->getId());
 			$sttm->bindValue(':numero_pedido', $TblPedido->getNumero_pedido());
 			$sttm->bindValue(':data_pedido', $TblPedido->getData_pedido());
 			$sttm->bindValue(':status', $TblPedido->getStatus());

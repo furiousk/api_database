@@ -17,7 +17,6 @@ class TblBairroDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'insert into `tbl_bairro` ( `nome`,`ativo` ) value ( :nome,:ativo )' );
-			$sttm->bindValue(':id', $TblBairro->getId());
 			$sttm->bindValue(':nome', $TblBairro->getNome());
 			$sttm->bindValue(':ativo', $TblBairro->getAtivo());
 			$sttm->execute();
