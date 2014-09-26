@@ -16,15 +16,18 @@ class Mapping extends MyPDO{
         
         return $this->folder_dao;
     }
-    public function setFolderDao($folder_dao){
+
+    public function setFolderDao( $folder_dao ){
         
         $this->folder_dao = $folder_dao;
     }
+
     public function getFolderVos(){
         
         return $this->folder_vos;
     }
-    public function setFolderVos($folder_vos){
+
+    public function setFolderVos( $folder_vos ){
         
         $this->folder_vos = $folder_vos;
     }    
@@ -36,36 +39,51 @@ class Mapping extends MyPDO{
 
         if( count( $this->findTableName() ) > 0 ){
             
+            $result = Array();
             foreach ( $this->findTableName()[2] as $i => $v ){
                 
                 $contentvos = $this->writeClassVo( $v, $this->findFieldName( $this->findTableName()[1][$i] ) );
                 $contentdao = $this->writeClassDao( $v, $this->findTableName()[1][$i], $this->findFieldName( $this->findTableName()[1][$i] ) );
-                
-                if( !is_dir( $pathvo ) ){ mkdir( $pathvo, 0777, true ); }
-                
-                $path_full_vo = $pathvo . DIRECTORY_SEPARATOR . $v . ".php";
-                
-                if( !file_exists( $path_full_vo ) ){
-                    
-                    $handle = fopen( $path_full_vo, "w") or die("Não foi possível abrir o arquivo!");
-                    fwrite( $handle, $contentvos );
-                    fclose( $handle );
-                    chmod( $path_full_vo, 0777 );
+
+                $filevos = $v . ".php";
+                $filedao = $v . "DAO.php";
+
+                if( $this->createFile( $pathvo, $filevos, $contentvos ) ){
+
+                    $result[1][]="Arquivo referente ao VO " . $v . " foi criado!";
+                }else{
+                    $result[1][]="Arquivo referente ao VO " . $v . " não foi criado!";
                 }
                 
-                if( !is_dir( $pathdao ) ){ mkdir( $pathdao, 0777, true ); }
-                
-                $path_full_dao = $pathdao . DIRECTORY_SEPARATOR . $v . "DAO.php";
-                
-                if( !file_exists( $path_full_dao ) ){
-                    
-                    $handle = fopen( $path_full_dao, "w") or die("Não foi possível abrir o arquivo!");
-                    fwrite( $handle, $contentdao );
-                    fclose( $handle );
-                    chmod( $path_full_dao, 0777 );
+                if( $this->createFile( $pathdao, $filedao, $contentdao ) ){
+
+                    $result[2][]="Arquivo referente ao DAO " . $v . " foi criado!";
+                }else{
+                    $result[2][]="Arquivo referente ao DAO " . $v . " não foi criado!";                    
                 }
+                
             }
+            return $result;
         }
+    }
+
+    private function createFile( $path, $file, $content ){
+
+        if( !is_dir( $path ) ){ mkdir( $path, 0777, true ); }
+        $path_full = $path . DIRECTORY_SEPARATOR . $file;
+
+        if( file_exists( $path_full ) ){ return false; }
+
+        $handle = fopen( $path_full, "w") or die("Não foi possível abrir o arquivo!");
+        fwrite( $handle, $content );
+        fclose( $handle );
+        chmod( $path_full, 0777 );
+        $size = filesize( $path_full );
+
+        if( $size > 0 ){ 
+            return true; 
+        }
+        return false;
     }
     
     private function findTableName(){
@@ -87,7 +105,7 @@ class Mapping extends MyPDO{
         return $rows;
     }
     
-    public function findFieldName( $tabela ){
+    private function findFieldName( $tabela ){
         
        $result = parent::query( "show fields from `".$tabela."`" );
        $rows   = "";
@@ -151,7 +169,7 @@ class Mapping extends MyPDO{
         if( count( $fields ) > 0 ){
         
             $content  = "<?php\n\n";
-            $content .= "/************************************************\n";
+            $content .= "/***********************************************\n";
             $content .= "*        Ferramentas DevPHP Bruno Alves        *\n";
             $content .= "************************************************/\n\n";
             $content .= "namespace " . $this->getFolderVos() . ";\n\n";
@@ -172,7 +190,7 @@ class Mapping extends MyPDO{
                 
                 $content .= "\tpublic function get" . ucfirst( $v[0] ) . "(){\n\n";
                 $content .= "\t\treturn \$this->" . $v[0] . ";\n";
-                $content .= "\t}\n";                
+                $content .= "\t}\n";
             }
             
             $content .= "\n";
@@ -188,7 +206,7 @@ class Mapping extends MyPDO{
         if( count( $fields ) > 0 ){
 
             $content  = "<?php\n\n";
-            $content .= "/************************************************\n";
+            $content .= "/***********************************************\n";
             $content .= "*        Ferramentas DevPHP Bruno Alves        *\n";
             $content .= "************************************************/\n\n";
             $content .= "namespace " . $this->getFolderDao() . ";\n\n";
@@ -221,6 +239,7 @@ class Mapping extends MyPDO{
                             $campos  = "`" . $v[0] . "`";
                             $marque  = ":" . $v[0];
                             $camposu = "`".$v[0]."`=:".$v[0];
+
                     } else {
 
                             $campos  .= ",`" . $v[0] . "`";
@@ -259,7 +278,7 @@ class Mapping extends MyPDO{
             $content .= "\t\t\tparent::rollBack();\n";
             $content .= "\t\t}\n";
             $content .= "\t}\n";            
-            
+
             $content .= "\tpublic function getAll(){\n\n";
             $content .= "\t\t\$sttm = parent::query( '" . $querys . "' );\n";
             $content .= "\t\t\$rst  = Array();\n\n";
@@ -270,6 +289,7 @@ class Mapping extends MyPDO{
             $content .= "\t\t}\n";
             $content .= "\t\treturn \$rst;\n";
             $content .= "\t}\n";
+
             $content .= "\tpublic function custonQuery( \$string ){\n\n";
             $content .= "\t\t\$sttm = parent::query( \$string );\n";
             $content .= "\t\t\$rst  = Array();\n\n";
@@ -283,5 +303,5 @@ class Mapping extends MyPDO{
             return $content;
         }
         return "";
-    }    
+    }
 }

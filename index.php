@@ -13,7 +13,7 @@ $ini_dev = "../config/config.ini";//<-config do Bruno desenvolvedor
 $mapp = new Classes\Sources\Mapping( $ini_dev );
 $mapp->setFolderVos("VOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
 $mapp->setFolderDao("DAOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
-$mapp->mappEntity();
+var_dump($mapp->mappEntity());
 /*/
 /*Mapeamento automático*/
 
@@ -24,13 +24,20 @@ $logdao  = new DAOs\TblLoginDAO( $ini_dev );
 $cliente = new VOs\TblCliente();
 $login   = new VOs\TblLogin();
 
-$login->setUser("furious");
-$login->setPass("1234");
-$login->setTbl_cliente_id(1);
-$login->setAtivo("1");
+echo $logdao->getAll()[0]->getUser()."\n";
 
-$logdao->insert( $login );
+/*
+$login->setId( 1 );
+$login->setUser( "furious" );
+$login->setPass( "12345" );
+$login->setTbl_cliente_id( 1 );
+$login->setAtivo( "1" );
+
+$logdao->update( $login );
 /*/
+//$logdao->insert( $login );
+
+//*/
 /*/
 $c = $clidao->getAll();
 
