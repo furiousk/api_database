@@ -6,25 +6,27 @@ define( 'DS', DIRECTORY_SEPARATOR );
 require_once( WWW_ROOT . DS . "autoload.php" );
 
 $INI_PRO = WWW_ROOT . DS . "Config" . DS . "config.ini";//<-config presente no projeto(Use este)
-$ini_dev = "../config/config.ini";//<-config do Bruno desenvolvedor
+$ini_dev = "../config/config.ini";//<-config do desenvolvedor
 
 /*Mapeamento automático*/
-//*
+/*
 $mapp = new Classes\Sources\Mapping( $ini_dev );
-$mapp->setFolderVos("VOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
-$mapp->setFolderDao("DAOs");//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
-var_dump($mapp->mappEntity());
+$mapp->setFolderVos( "VOs" );//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
+$mapp->setFolderDao( "DAOs" );//<-Os arquivos presentes nesta pasta foram gerados por um banco de teste (Apague-os)
+var_dump( $mapp->mappEntity() );
 /*/
 /*Mapeamento automático*/
 
-/*
+//*
 $clidao  = new DAOs\TblClienteDAO( $ini_dev );
 $logdao  = new DAOs\TblLoginDAO( $ini_dev );
 
 $cliente = new VOs\TblCliente();
 $login   = new VOs\TblLogin();
 
-echo $logdao->getAll()[0]->getUser()."\n";
+$login1 = $logdao->custonQuery("select * from tbl_login");
+
+var_dump( $login1 );
 
 /*
 $login->setId( 1 );

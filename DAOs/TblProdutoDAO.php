@@ -36,7 +36,7 @@ class TblProdutoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_produto` set `nome`=:nome,`image`=:image,`preco`=:preco,`tipo`=:tipo,`ativo`=:ativo where `id`=:id' );
-			$sttm->bindValue(':id', $TblProduto->getId());
+			$sttm->bindValue(':id', $TblProduto->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':nome', $TblProduto->getNome());
 			$sttm->bindValue(':image', $TblProduto->getImage());
 			$sttm->bindValue(':preco', $TblProduto->getPreco());
@@ -49,6 +49,25 @@ class TblProdutoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`nome`,`image`,`preco`,`tipo`,`ativo` from `tbl_produto` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblProduto = new TblProduto();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblProduto->setId( $row->id );
+			$TblProduto->setNome( $row->nome );
+			$TblProduto->setImage( $row->image );
+			$TblProduto->setPreco( $row->preco );
+			$TblProduto->setTipo( $row->tipo );
+			$TblProduto->setAtivo( $row->ativo );
+		}
+
+		return $TblProduto;
 	}
 	public function getAll(){
 

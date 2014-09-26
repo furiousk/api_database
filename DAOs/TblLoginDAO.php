@@ -35,7 +35,7 @@ class TblLoginDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_login` set `user`=:user,`pass`=:pass,`ativo`=:ativo,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblLogin->getId());
+			$sttm->bindValue(':id', $TblLogin->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':user', $TblLogin->getUser());
 			$sttm->bindValue(':pass', $TblLogin->getPass());
 			$sttm->bindValue(':ativo', $TblLogin->getAtivo());
@@ -47,6 +47,24 @@ class TblLoginDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`user`,`pass`,`ativo`,`tbl_cliente_id` from `tbl_login` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblLogin = new TblLogin();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblLogin->setId( $row->id );
+			$TblLogin->setUser( $row->user );
+			$TblLogin->setPass( $row->pass );
+			$TblLogin->setAtivo( $row->ativo );
+			$TblLogin->setTbl_cliente_id( $row->tbl_cliente_id );
+		}
+
+		return $TblLogin;
 	}
 	public function getAll(){
 

@@ -37,7 +37,7 @@ class TblPedidoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_pedido` set `numero_pedido`=:numero_pedido,`data_pedido`=:data_pedido,`status`=:status,`forma_pagamento`=:forma_pagamento,`ativo`=:ativo,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblPedido->getId());
+			$sttm->bindValue(':id', $TblPedido->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':numero_pedido', $TblPedido->getNumero_pedido());
 			$sttm->bindValue(':data_pedido', $TblPedido->getData_pedido());
 			$sttm->bindValue(':status', $TblPedido->getStatus());
@@ -51,6 +51,26 @@ class TblPedidoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`numero_pedido`,`data_pedido`,`status`,`forma_pagamento`,`ativo`,`tbl_cliente_id` from `tbl_pedido` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblPedido = new TblPedido();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblPedido->setId( $row->id );
+			$TblPedido->setNumero_pedido( $row->numero_pedido );
+			$TblPedido->setData_pedido( $row->data_pedido );
+			$TblPedido->setStatus( $row->status );
+			$TblPedido->setForma_pagamento( $row->forma_pagamento );
+			$TblPedido->setAtivo( $row->ativo );
+			$TblPedido->setTbl_cliente_id( $row->tbl_cliente_id );
+		}
+
+		return $TblPedido;
 	}
 	public function getAll(){
 

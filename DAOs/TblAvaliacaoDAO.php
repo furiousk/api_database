@@ -36,7 +36,7 @@ class TblAvaliacaoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_avaliacao` set `rate`=:rate,`comentario`=:comentario,`data_avaliacao`=:data_avaliacao,`ativo`=:ativo,`tbl_produto_id`=:tbl_produto_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblAvaliacao->getId());
+			$sttm->bindValue(':id', $TblAvaliacao->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':rate', $TblAvaliacao->getRate());
 			$sttm->bindValue(':comentario', $TblAvaliacao->getComentario());
 			$sttm->bindValue(':data_avaliacao', $TblAvaliacao->getData_avaliacao());
@@ -49,6 +49,25 @@ class TblAvaliacaoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`rate`,`comentario`,`data_avaliacao`,`ativo`,`tbl_produto_id` from `tbl_avaliacao` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblAvaliacao = new TblAvaliacao();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblAvaliacao->setId( $row->id );
+			$TblAvaliacao->setRate( $row->rate );
+			$TblAvaliacao->setComentario( $row->comentario );
+			$TblAvaliacao->setData_avaliacao( $row->data_avaliacao );
+			$TblAvaliacao->setAtivo( $row->ativo );
+			$TblAvaliacao->setTbl_produto_id( $row->tbl_produto_id );
+		}
+
+		return $TblAvaliacao;
 	}
 	public function getAll(){
 

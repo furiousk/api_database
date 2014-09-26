@@ -35,7 +35,7 @@ class TblContatoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_contato` set `tipo`=:tipo,`contato`=:contato,`ativo`=:ativo,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblContato->getId());
+			$sttm->bindValue(':id', $TblContato->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':tipo', $TblContato->getTipo());
 			$sttm->bindValue(':contato', $TblContato->getContato());
 			$sttm->bindValue(':ativo', $TblContato->getAtivo());
@@ -47,6 +47,24 @@ class TblContatoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`tipo`,`contato`,`ativo`,`tbl_cliente_id` from `tbl_contato` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblContato = new TblContato();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblContato->setId( $row->id );
+			$TblContato->setTipo( $row->tipo );
+			$TblContato->setContato( $row->contato );
+			$TblContato->setAtivo( $row->ativo );
+			$TblContato->setTbl_cliente_id( $row->tbl_cliente_id );
+		}
+
+		return $TblContato;
 	}
 	public function getAll(){
 

@@ -221,6 +221,7 @@ class Mapping extends MyPDO{
             $marque  = "";
             $blind   = "";
             $blindup = "";
+            $blindid = "";
             $objs    = "";
             
             foreach ( $fields as $i => $v ){
@@ -228,9 +229,10 @@ class Mapping extends MyPDO{
                 if ( $v[5] == "auto_increment" ) {
                     
                     $codigo   = "`" . $v[0] . "`,";
+                    $byid     = ":" . $v[0];
                     $codigosu = "`".$v[0]."`=:".$v[0];
                     $objs    .= "\t\t\t\$".$nameclass."->set".  ucfirst( $v[0] )."( \$row->".$v[0]." );\n";
-                    $blindup .= "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."());\n";
+                    $blindid  = "\t\t\t\$sttm->bindValue(':".$v[0]."', \$".$nameclass."->get".  ucfirst( $v[0] )."(),parent::PARAM_INT);\n";
                     
                 } else {
 
@@ -271,6 +273,7 @@ class Mapping extends MyPDO{
             $content .= "\t\tparent::beginTransaction();\n";
             $content .= "\t\ttry {\n\n";
             $content .= "\t\t\t\$sttm = parent::prepare( '" . $update . "' );\n";
+            $content .= $blindid;
             $content .= $blindup;
             $content .= "\t\t\t\$sttm->execute();\n";
             $content .= "\t\t\tparent::commit();\n\n";
@@ -278,6 +281,17 @@ class Mapping extends MyPDO{
             $content .= "\t\t\tparent::rollBack();\n";
             $content .= "\t\t}\n";
             $content .= "\t}\n";            
+
+            $content .= "\tpublic function getById( \$id ){\n\n";
+            $content .= "\t\t\$sttm = parent::prepare( '" . $querys . " where " . $codigosu . "' );\n";
+            $content .= "\t\t\$sttm->bindValue('".$byid."', \$id, parent::PARAM_INT);\n";
+            $content .= "\t\t\$sttm->execute();\n";
+            $content .= "\t\t\$" . $nameclass . " = new " . $nameclass ."();\n\n";
+            $content .= "\t\twhile( \$row = \$sttm->fetch( 5 ) ) {\n\n";
+            $content .= $objs;
+            $content .= "\t\t}\n\n";
+            $content .= "\t\treturn \$" . $nameclass . ";\n";
+            $content .= "\t}\n";
 
             $content .= "\tpublic function getAll(){\n\n";
             $content .= "\t\t\$sttm = parent::query( '" . $querys . "' );\n";

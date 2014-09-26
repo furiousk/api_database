@@ -36,7 +36,7 @@ class TblPedidoTemProdutoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_pedido_tem_produto` set `qntd`=:qntd,`valor`=:valor,`tbl_pedido_id`=:tbl_pedido_id,`tbl_pedido_tbl_cliente_id`=:tbl_pedido_tbl_cliente_id,`tbl_produto_id`=:tbl_produto_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblPedidoTemProduto->getId());
+			$sttm->bindValue(':id', $TblPedidoTemProduto->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':qntd', $TblPedidoTemProduto->getQntd());
 			$sttm->bindValue(':valor', $TblPedidoTemProduto->getValor());
 			$sttm->bindValue(':tbl_pedido_id', $TblPedidoTemProduto->getTbl_pedido_id());
@@ -49,6 +49,25 @@ class TblPedidoTemProdutoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`qntd`,`valor`,`tbl_pedido_id`,`tbl_pedido_tbl_cliente_id`,`tbl_produto_id` from `tbl_pedido_tem_produto` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblPedidoTemProduto = new TblPedidoTemProduto();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblPedidoTemProduto->setId( $row->id );
+			$TblPedidoTemProduto->setQntd( $row->qntd );
+			$TblPedidoTemProduto->setValor( $row->valor );
+			$TblPedidoTemProduto->setTbl_pedido_id( $row->tbl_pedido_id );
+			$TblPedidoTemProduto->setTbl_pedido_tbl_cliente_id( $row->tbl_pedido_tbl_cliente_id );
+			$TblPedidoTemProduto->setTbl_produto_id( $row->tbl_produto_id );
+		}
+
+		return $TblPedidoTemProduto;
 	}
 	public function getAll(){
 

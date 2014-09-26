@@ -38,7 +38,7 @@ class TblEnderecoDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_endereco` set `rua`=:rua,`numero`=:numero,`latitude`=:latitude,`longitude`=:longitude,`ativo`=:ativo,`tbl_bairro_id`=:tbl_bairro_id,`tbl_cliente_id`=:tbl_cliente_id where `id`=:id' );
-			$sttm->bindValue(':id', $TblEndereco->getId());
+			$sttm->bindValue(':id', $TblEndereco->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':rua', $TblEndereco->getRua());
 			$sttm->bindValue(':numero', $TblEndereco->getNumero());
 			$sttm->bindValue(':latitude', $TblEndereco->getLatitude());
@@ -53,6 +53,27 @@ class TblEnderecoDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`rua`,`numero`,`latitude`,`longitude`,`ativo`,`tbl_bairro_id`,`tbl_cliente_id` from `tbl_endereco` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblEndereco = new TblEndereco();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblEndereco->setId( $row->id );
+			$TblEndereco->setRua( $row->rua );
+			$TblEndereco->setNumero( $row->numero );
+			$TblEndereco->setLatitude( $row->latitude );
+			$TblEndereco->setLongitude( $row->longitude );
+			$TblEndereco->setAtivo( $row->ativo );
+			$TblEndereco->setTbl_bairro_id( $row->tbl_bairro_id );
+			$TblEndereco->setTbl_cliente_id( $row->tbl_cliente_id );
+		}
+
+		return $TblEndereco;
 	}
 	public function getAll(){
 

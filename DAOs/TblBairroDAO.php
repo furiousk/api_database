@@ -33,7 +33,7 @@ class TblBairroDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_bairro` set `nome`=:nome,`ativo`=:ativo where `id`=:id' );
-			$sttm->bindValue(':id', $TblBairro->getId());
+			$sttm->bindValue(':id', $TblBairro->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':nome', $TblBairro->getNome());
 			$sttm->bindValue(':ativo', $TblBairro->getAtivo());
 			$sttm->execute();
@@ -43,6 +43,22 @@ class TblBairroDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`nome`,`ativo` from `tbl_bairro` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblBairro = new TblBairro();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblBairro->setId( $row->id );
+			$TblBairro->setNome( $row->nome );
+			$TblBairro->setAtivo( $row->ativo );
+		}
+
+		return $TblBairro;
 	}
 	public function getAll(){
 

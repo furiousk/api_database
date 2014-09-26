@@ -36,7 +36,7 @@ class TblClienteDAO extends MyPDO{
 		try {
 
 			$sttm = parent::prepare( 'update `tbl_cliente` set `nome`=:nome,`aniversario`=:aniversario,`sexo`=:sexo,`data_cadastro`=:data_cadastro,`ativo`=:ativo where `id`=:id' );
-			$sttm->bindValue(':id', $TblCliente->getId());
+			$sttm->bindValue(':id', $TblCliente->getId(),parent::PARAM_INT);
 			$sttm->bindValue(':nome', $TblCliente->getNome());
 			$sttm->bindValue(':aniversario', $TblCliente->getAniversario());
 			$sttm->bindValue(':sexo', $TblCliente->getSexo());
@@ -49,6 +49,25 @@ class TblClienteDAO extends MyPDO{
 
 			parent::rollBack();
 		}
+	}
+	public function getById( $id ){
+
+		$sttm = parent::prepare( 'select `id`,`nome`,`aniversario`,`sexo`,`data_cadastro`,`ativo` from `tbl_cliente` where `id`=:id' );
+		$sttm->bindValue(':id', $id, parent::PARAM_INT);
+		$sttm->execute();
+		$TblCliente = new TblCliente();
+
+		while( $row = $sttm->fetch( 5 ) ) {
+
+			$TblCliente->setId( $row->id );
+			$TblCliente->setNome( $row->nome );
+			$TblCliente->setAniversario( $row->aniversario );
+			$TblCliente->setSexo( $row->sexo );
+			$TblCliente->setData_cadastro( $row->data_cadastro );
+			$TblCliente->setAtivo( $row->ativo );
+		}
+
+		return $TblCliente;
 	}
 	public function getAll(){
 
