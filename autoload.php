@@ -4,6 +4,9 @@
  *        Ferramentas DevPHP Bruno Alves        *
  ************************************************/
 
+define( 'WWW_ROOT', dirname(__FILE__) );
+define( 'DS', DIRECTORY_SEPARATOR );
+
 function carrega_class( $class ){
  
     $class_path = WWW_ROOT . DS . str_replace('\\', DS, $class).".php";

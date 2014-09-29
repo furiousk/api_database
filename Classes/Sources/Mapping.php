@@ -65,6 +65,7 @@ class Mapping extends MyPDO{
             }
             return $result;
         }
+        return false;
     }
 
     private function createFile( $path, $file, $content ){

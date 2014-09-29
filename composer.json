@@ -1,0 +1,17 @@
+{
+    "name": "furiousk/api_database",
+    "description": "Biblioteca de mapeamento de entidades.",
+	"authors": [{
+		"name": "Bruno Alves",
+		"email": "brunoalves.dev@gmail.com"
+	}],
+	"require": {
+	"php": ">=5.2.8"
+	},
+    "keywords": ["database","framework","entidades","banco de dados","mapeador de entidade"],
+    "license": "MIT",
+    "require-dev": {
+        "codeception/codeception": "1.0.0"
+    },
+    "minimum-stability": "dev"
+}
